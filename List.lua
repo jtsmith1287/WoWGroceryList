@@ -39,7 +39,8 @@ end
 ------------------------------------------------------------
 -- recipes (optional): the list to add to; default is this character's own list (Alt+click).
 -- count (optional): starting quantity for a recipe that isn't on the list yet.
-function ns.AddTracked(key, spellID, name, reagents, icon, recipes, count)
+-- insertAtTop (optional): put a new recipe first in the list instead of appending it.
+function ns.AddTracked(key, spellID, name, reagents, icon, recipes, count, insertAtTop)
     if not ns.IsStr(key) or not ns.IsStr(name) or type(reagents) ~= "table" then
         return
     end
@@ -61,13 +62,22 @@ function ns.AddTracked(key, spellID, name, reagents, icon, recipes, count)
             ns.Print(name .. " has no reagents to track.")
             return
         end
+        local seq
+        if insertAtTop then
+            for i, item in ipairs(ns.SortedRecipes(recipes)) do
+                item.r.seq = i + 1
+            end
+            seq = 1
+        else
+            seq = NextSeq(recipes)
+        end
         entry = {
             name = name,
             spellID = ns.IsNum(spellID) and spellID or nil,
             count = count,
             reagents = reagents,
             icon = icon,
-            seq = NextSeq(recipes)
+            seq = seq
         }
         recipes[key] = entry
     end

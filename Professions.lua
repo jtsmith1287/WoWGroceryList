@@ -178,5 +178,5 @@ function ns.AddReagentAsRecipe(itemID, itemName, need)
     local perCraft = type(schematic) == "table" and ns.IsNum(schematic.quantityMin) and schematic.quantityMin >= 1 and
                          schematic.quantityMin or 1
     local crafts = math.ceil((ns.IsNum(need) and need >= 1 and need or 1) / perCraft)
-    ns.AddTracked(key, recipeID, name, reagents, nil, recipes, crafts)
+    ns.AddTracked(key, recipeID, name, reagents, nil, recipes, crafts, true)
 end
