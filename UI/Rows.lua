@@ -31,7 +31,11 @@ local function ShowReagentTooltip(self, d)
     for _, u in ipairs(d.uses) do
         GameTooltip:AddLine("  " .. u.name .. " x" .. u.count .. " (" .. u.per .. " each)", 1, 1, 1)
     end
-    GameTooltip:AddLine("Click: open or add as recipe", 0.6, 0.6, 0.6)
+    if ns.GetOwned(d.id, ns.db.includeBank) >= d.need then
+        GameTooltip:AddLine("Already have enough", 0.6, 0.6, 0.6)
+    else
+        GameTooltip:AddLine("Click: add remaining as recipe", 0.6, 0.6, 0.6)
+    end
     if not ns.IsAllView() then
         GameTooltip:AddLine(ns.ModifierLabel() .. "+Right-click: remove reagent from list", 0.6, 0.6, 0.6)
     end
@@ -244,7 +248,8 @@ function ns.GetRow(i)
             -- a click that merely ends a drag shouldn't open the recipe
             if d.kind == "recipe" and ns.IsOwnView() and not ns.ModifierDown() and GetTime() - lastDragStop > 0.25 then
                 ns.OpenRecipe(d.recipe)
-            elseif d.kind == "reagent" and not ns.ModifierDown() and ns.ShowReagentMenu then
+            elseif d.kind == "reagent" and not ns.ModifierDown() and ns.ShowReagentMenu and
+                ns.GetOwned(d.id, ns.db.includeBank) < d.need then
                 GameTooltip:Hide()
                 ns.ShowReagentMenu(self, d)
             end

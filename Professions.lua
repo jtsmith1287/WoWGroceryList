@@ -134,17 +134,6 @@ local function RecipeName(id)
     end
 end
 
-function ns.OpenReagentRecipe(itemID, itemName)
-    local id = ns.FindRecipeID(itemID, nil, true)
-    if not id then
-        ns.Print("None of your recipes make " .. tostring(itemName) .. ".")
-        return
-    end
-    ns.OpenRecipe({
-        spellID = id,
-        name = RecipeName(id) or itemName
-    })
-end
 
 -- Adds the recipe that makes a reagent to the list being viewed, with enough crafts to cover
 -- the quantity the list needs.
@@ -173,10 +162,17 @@ function ns.AddReagentAsRecipe(itemID, itemName, need)
         return
     end
 
+    local required = ns.IsNum(need) and need >= 1 and math.ceil(need) or 1
+    local shortage = required - ns.GetOwned(itemID, ns.db.includeBank)
+    if shortage <= 0 then
+        ns.Print("You already own enough " .. tostring(itemName) .. " to cover the list.")
+        return
+    end
+
     -- some recipes make several items per craft
     local schematic = ns.Try(C_TradeSkillUI.GetRecipeSchematic, recipeID, false)
     local perCraft = type(schematic) == "table" and ns.IsNum(schematic.quantityMin) and schematic.quantityMin >= 1 and
                          schematic.quantityMin or 1
-    local crafts = math.ceil((ns.IsNum(need) and need >= 1 and need or 1) / perCraft)
+    local crafts = math.ceil(shortage / perCraft)
     ns.AddTracked(key, recipeID, name, reagents, nil, recipes, crafts, true)
 end

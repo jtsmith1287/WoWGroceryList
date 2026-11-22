@@ -1,8 +1,8 @@
--- Reagent click menu: Open / Add as recipe.
+-- Reagent click menu: add the remaining quantity as a recipe.
 local _, ns = ...
 
 ------------------------------------------------------------
--- Reagent click menu: Open / Add as recipe
+-- Reagent click menu: add the remaining quantity as a recipe
 ------------------------------------------------------------
 ns.reagentMenu = nil
 local reagentCatcher
@@ -22,15 +22,9 @@ local function CreateReagentMenu()
     m:SetFrameStrata("FULLSCREEN_DIALOG")
     m:SetClampedToScreen(true)
     m:EnableMouse(true)
-    m:SetSize(180, 70)
+    m:SetSize(180, 42)
     ns.ApplySkin(m, 0.97)
     m:Hide()
-
-    m.title = m:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    m.title:SetPoint("TOPLEFT", 10, -9)
-    m.title:SetPoint("TOPRIGHT", -10, -9)
-    m.title:SetJustifyH("LEFT")
-    m.title:SetWordWrap(false)
 
     local function MakeItem(text, y, onClick)
         local b = CreateFrame("Button", nil, m)
@@ -59,19 +53,9 @@ local function CreateReagentMenu()
         end))
         return b
     end
-    m.open = MakeItem("Open", -26, function(item)
-        ns.OpenReagentRecipe(item.id, item.name)
-    end)
-    m.add = MakeItem("Add as recipe", -26 - ns.MENU_ROW_HEIGHT, function(item)
+    m.add = MakeItem("Add remaining as recipe", -9, function(item)
         ns.AddReagentAsRecipe(item.id, item.name, item.need)
     end)
-
-    m.note = m:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-    m.note:SetPoint("TOPLEFT", 10, -(26 + 2 * ns.MENU_ROW_HEIGHT + 4))
-    m.note:SetPoint("TOPRIGHT", -10, -(26 + 2 * ns.MENU_ROW_HEIGHT + 4))
-    m.note:SetJustifyH("LEFT")
-    m.note:SetJustifyV("TOP")
-    m.note:SetHeight(30)
 
     -- invisible full-screen button behind the menu: clicking anywhere else closes it
     reagentCatcher = CreateFrame("Button", nil, UIParent)
@@ -115,27 +99,14 @@ ns.ShowReagentMenu = function(anchor, d)
         name = d.name,
         need = d.need
     }
-    m.title:SetText(d.name)
 
-    local openReason, addReason, note
+    local addReason
     if not anyRecipe then
-        openReason = "No recipe known for " .. d.name .. " yet. Open the profession window that makes it, wait a moment, and try again."
-        addReason = openReason
-        note = "No recipe known yet. Open its profession window once to learn it."
-    else
-        if not ownRecipe then
-            openReason = "Only another character knows how to make " .. d.name .. "."
-            note = "Only another character knows this recipe."
-        end
-        if ns.IsAllView() then
-            addReason = "Pick a single character in the list selector first."
-            note = "Pick one character to add recipes."
-        end
+        addReason = "No recipe known for " .. d.name .. " yet. Open the profession window that makes it, wait a moment, and try again."
+    elseif ns.IsAllView() then
+        addReason = "Pick a single character in the list selector first."
     end
-    SetMenuItem(m.open, openReason)
     SetMenuItem(m.add, addReason)
-    m.note:SetText(note or "")
-    m:SetHeight(note and 100 or 70)
 
     local x, y = GetCursorPosition()
     local scale = UIParent:GetEffectiveScale()
