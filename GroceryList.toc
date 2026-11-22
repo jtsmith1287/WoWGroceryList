@@ -1,0 +1,27 @@
+## Interface: 16001
+## Title: GroceryList
+## Notes: Alt+click recipes in your profession window to build a shopping list of reagents.
+## Version: 0.1.9
+## SavedVariables: GroceryListDB
+# GroceryListCharDB is now only read once, to move old lists into GroceryListDB
+## SavedVariablesPerCharacter: GroceryListCharDB
+
+Core.lua
+GameAPI.lua
+Database.lua
+Settings.lua
+Characters.lua
+List.lua
+Display.lua
+Professions.lua
+Sources/Retail.lua
+Sources/Classic.lua
+UI/Skin.lua
+UI/Rows.lua
+UI/CraftBar.lua
+UI/ViewMenu.lua
+UI/ReagentMenu.lua
+UI/MainFrame.lua
+Crafting.lua
+Commands.lua
+GroceryList.lua
