@@ -1,7 +1,7 @@
 ## Interface: 16001
 ## Title: GroceryList
 ## Notes: Alt+click recipes in your profession window to build a shopping list of reagents.
-## Version: 0.1.9
+## Version: 0.1.6
 ## SavedVariables: GroceryListDB
 # GroceryListCharDB is now only read once, to move old lists into GroceryListDB
 ## SavedVariablesPerCharacter: GroceryListCharDB
